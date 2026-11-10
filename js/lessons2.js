@@ -16,7 +16,8 @@ window.LESSONS_PART2 = [
       <h2 class="h-sub">Зачем нужен брокер сообщений</h2>
       <p><b>Прямая интеграция</b> (сервис отправляет событие сразу всем получателям) имеет недостатки: если приёмник упал - событие потеряно; нагрузка при повторных отправках; сложно отправить одно событие нескольким сервисам.</p>
       <p><b>С брокером:</b> сообщения сохраняются надёжно; каждый сервис читает в своём темпе; системы независимы.</p>` },
-    { type: "svg", id: "l5_broker", cap: "Иллюстрация 5.1. Слева - хрупкая прямая интеграция; справа - надёжная интеграция через Kafka-брокер" },
+    { type: "img", src: "assets/illustrations/lesson5-slide03.png", title: "Apache Kafka: Основные понятия" },
+      { type: "img", src: "assets/illustrations/lesson5-slide04.png", title: "Apache Kafka: Основные понятия (через брокера)" },
     { type: "prose", html: `
       <h2 class="h-sub">Компоненты</h2>
       <ul>
@@ -27,7 +28,7 @@ window.LESSONS_PART2 = [
         <li><b>Offset</b> - номер сообщения;</li>
         <li><b>Broker</b> - сервер Kafka.</li>
       </ul>` },
-    { type: "svg", id: "l5_topic", cap: "Иллюстрация 5.2. Топики Orders и Calls с партициями; producer пишет, consumer-группа читает" },
+    { type: "img", src: "assets/illustrations/lesson5-slide05.png", title: "Apache Kafka: Компоненты" },
     { type: "table", headers: ["", "Producer (отправитель)", "Consumer (потребитель)"], rows: [
       ["Назначение", "Публикация данных в топики", "Подписка и чтение данных из топиков"],
       ["Работа с offset", "Не использует", "Управляет позицией чтения (offset)"],
@@ -58,7 +59,8 @@ window.LESSONS_PART2 = [
       <p>Offset можно <b>сдвинуть назад</b> - перечитать события для повторной обработки части данных. Можно начать <b>с самого начала</b> - выгрузить всю историю. Именно поэтому Kappa-архитектура («всё есть поток») реализуема на Kafka.</p>
       <h2 class="h-sub">Репликация</h2>
       <p>Каждая партиция реплицируется на несколько брокеров: один лидер и фолловеры-копии. Реплики синхронизируются, и <b>при падении лидера одна из копий становится новым лидером</b> - отказоустойчивость.</p>` },
-    { type: "svg", id: "l5_repl", cap: "Иллюстрация 5.3. Репликация партиции: лидер + копии; при падении лидера выбирается новый" },
+    { type: "img", src: "assets/illustrations/lesson5-slide10.png", title: "Apache Kafka: репликация" },
+      { type: "img", src: "assets/illustrations/lesson5-slide11.png", title: "Apache Kafka: синхронизация реплик" },
     { type: "prose", html: `
       <h2 class="h-sub">Хранение: retention policy</h2>
       <p>Kafka <b>не удаляет сообщения сразу после чтения</b>. Хранение - в течение определённого времени или до достижения лимита по объёму диска; когда лимит достигнут, старые сообщения удаляются (retention policy).</p>
@@ -117,7 +119,7 @@ window.LESSONS_PART2 = [
       <p><b>Apache Spark</b> - фреймворк с открытым исходным кодом для распределённой обработки больших данных. Позволяет работать со структурированными и слабоструктурированными данными, поддерживает широкий спектр задач - от потоковой аналитики до машинного обучения.</p>
       <p><b>Ключевое преимущество:</b> вычисления в оперативной памяти (in-memory) обеспечивают производительность, в десятки раз превышающую традиционные дисковые системы.</p>
       <h2 class="h-sub">Компоненты</h2>` },
-    { type: "svg", id: "l6_stack", cap: "Иллюстрация 6.1. Слои Spark: языки (Scala, Java, Python, R) над Spark Core; SQL, Streaming, MLlib, GraphX как модули" },
+    { type: "img", src: "assets/illustrations/lesson6-slide03.png", title: "Apache Spark: компоненты" },
     { type: "table", headers: ["Компонент", "Назначение"], rows: [
       ["Spark Core", "хранение данных, управление памятью, распределение и отслеживание задач в кластере"],
       ["MLlib", "набор библиотек для машинного обучения"],
@@ -135,7 +137,7 @@ window.LESSONS_PART2 = [
         <li><b>Task</b> - выполняет серию инструкций (чтение, фильтрация…) над разделом данных (RDD Partitions).</li>
         <li><b>Cache</b> - распределённое in-memory-хранилище данных.</li>
       </ul>` },
-    { type: "svg", id: "l6_exec", cap: "Иллюстрация 6.2. Шаги выполнения: драйвер → Cluster Manager → Executors → сборка результата" },
+    { type: "img", src: "assets/illustrations/lesson6-slide06.png", title: "Apache Spark: шаги выполнения" },
     { type: "prose", html: `
       <h2 class="h-sub">RDD vs DataFrame</h2>
       <table class="tbl">
@@ -145,7 +147,7 @@ window.LESSONS_PART2 = [
         <tr><td><b>Скорость</b></td><td>ниже (объекты JVM: сериализация/десериализация)</td><td>высокая: колоночный формат в памяти + генерация кода</td></tr>
       </table>
       <p><b>Оптимизатор Catalyst:</b> логический план (дерево операций) → анализ (типы, столбцы, источники) → логическая оптимизация (убрать лишние фильтры, объединить операции) → физический план (выбор sort-merge или broadcast join) → генерация байт-кода Java.</p>` },
-    { type: "svg", id: "l6_catalyst", cap: "Иллюстрация 6.3. Путь запроса через Catalyst: план → анализ → оптимизация → физический план → байт-код" },
+    { type: "img", src: "assets/illustrations/lesson6-slide08.png", title: "Apache Spark: оптимизатор" },
     { type: "prose", html: `
       <h2 class="h-sub">PySpark DataFrame vs Pandas DataFrame</h2>
       <table class="tbl">
@@ -222,7 +224,8 @@ filtered_rdd = squared_rdd.filter(lambda x: x > 10)  # ТРАНСФОРМАЦИ�
 result = filtered_rdd.collect()                # ДЕЙСТВИЕ - вот тут всё выполнилось
 print(result)                                  # Вывод: [16, 25]` },
     { type: "note", html: "<b>Ключевой момент:</b> весь граф map() → filter() выполнился только в момент вызова collect()." },
-    { type: "svg", id: "l7_lazy", cap: "Иллюстрация 7.1. Ленивые вычисления: трансформации складываются в план, действие «нажимает кнопку» выполнения" },
+    { type: "img", src: "assets/illustrations/lesson7-slide02.png", title: "Apache Spark: принципы работы (Transformations)" },
+      { type: "img", src: "assets/illustrations/lesson7-slide03.png", title: "Apache Spark: принципы работы (Actions)" },
     { type: "table", headers: ["", "Transformations", "Actions"], rows: [
       ["Результат", "новый RDD / DataFrame", "конкретное значение (число, массив, запись на диск)"],
       ["Вычисления", "Lazy - только запись плана", "Eager - немедленный запуск всех вычислений"],
@@ -233,7 +236,7 @@ print(result)                                  # Вывод: [16, 25]` },
       <h2 class="h-sub">Shuffle</h2>
       <p><b>Shuffle (перемешивание)</b> - процесс перераспределения данных между партициями, который требует записи на диск и передачи по сети. <b>Самая дорогая операция в распределённых вычислениях.</b></p>
       <p>Как проходит: map-сторона - вычисления на каждой партиции, сортировка по ключу, запись в локальные файлы + индекс; <b>передача по сети</b> - файлы разбиваются на shuffle blocks и едут на исполнители; reduce-сторона - приём и буферизация в памяти (при нехватке - сброс на диск, spill), сортировка, reduce-операция.</p>` },
-    { type: "svg", id: "l7_shuffle", cap: "Иллюстрация 7.2. Shuffle: map-сторона → запись на диск → сеть → reduce-сторона. Дорогой I/O и сеть" },
+    { type: "img", src: "assets/illustrations/lesson7-slide06.png", title: "Apache Spark: Shuffle" },
     { type: "table", headers: ["Операция", "Что делает", "Почему нужен shuffle"], rows: [
       ["groupByKey()", "группировка по ключу", "все одинаковые ключи должны оказаться в одной партиции"],
       ["reduceByKey()", "агрегация по ключу", "значения ключа собираются вместе"],
@@ -241,7 +244,7 @@ print(result)                                  # Вывод: [16, 25]` },
       ["distinct()", "удаление дубликатов", "чтобы найти дубликаты, нужно сравнить все элементы"],
       ["repartition()", "изменение числа партиций", "данные физически перераспределяются"]
     ] },
-    { type: "svg", id: "l7_groupby", cap: "Иллюстрация 7.3. groupByKey(): до shuffle ключи разбросаны по узлам, после - собраны в одной партиции" },
+    { type: "img", src: "assets/illustrations/lesson7-slide09.png", title: "Apache Spark: Shuffle (groupByKey)" },
     { type: "prose", html: `
       <h2 class="h-sub">Узкие и широкие трансформации</h2>
       <table class="tbl">

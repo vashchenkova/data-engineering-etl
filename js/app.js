@@ -39,6 +39,28 @@
       txt(cx, cy - 2, label, 11, tcol, 800) + txt(cx, cy + 14, sub, 9, tcol === "#0d0d0d" ? "rgba(13,13,13,.7)" : "rgba(236,236,236,.7)");
   }
 
+  function kcard(x, y, w, h, barColor, title, lines) {
+    var out = box(x, y, w, h, '#f1f1f3', 12)+
+      '<rect x="'+x+'" y="'+y+'" width="6" height="'+h+'" rx="3" fill="'+barColor+'"/>'+
+      txt(x + 22, y + 32, title, 15, barColor, 800, "start");
+    for (var i = 0; i < lines.length; i++) {
+      out += txt(x + 22, y + 58 + i * 25, "• " + lines[i], 12.5, C.ink, 600, "start");
+    }
+    return out;
+  }
+  function pbox(x, y, label, neon) {
+    var fill = neon ? '#39ff14' : '#f1f1f3';
+    var tcol = neon ? '#0d0d0d' : C.ink;
+    return box(x, y, 150, 54, fill, 12)+txt(x + 75, y + 33, label, 13, tcol, 700);
+  }
+
+  function mcard(x, y, name, sub) {
+    return box(x, y, 240, 86, '#f1f1f3', 12)+
+      '<rect x="'+x+'" y="'+y+'" width="6" height="86" rx="3" fill="#39ff14"/>'+
+      txt(x + 24, y + 36, name, 15.5, '#0f8a02', 800, "start")+
+      txt(x + 24, y + 62, sub, 12.5, C.muted, 600, "start");
+  }
+
   // ---------- Иконки (SVG вместо смайлов) ----------
   var ICONS = {
     chart: '<path d="M4 20V10M10 20V4M16 20v-7M20 20H2" stroke-linecap="round"/>',
@@ -349,16 +371,13 @@
       '</svg>',
 
     // ---------- Урок 8 ----------
-    l8_metrics: '<svg viewBox="0 0 820 260">'+DEFS+
-      hexagon(150,120,58,C.a,"Accuracy","Точность")+
-      hexagon(300,120,58,C.blue,"Completeness","Полнота")+
-      hexagon(450,120,58,C.teal,"Consistency","Согласованность")+
-      hexagon(600,120,58,C.amber,"Timeliness","Актуальность")+
-      hexagon(225,225,58,C.a2,"Validity","Валидность")+
-      hexagon(375,225,58,C.green,"Uniqueness","Уникальность")+
-      txt(560,215,"Качество = соответствие данным",12.5,C.ink,700)+
-      txt(560,235,"бизнес-целям, регламентам,",12,C.muted)+
-      txt(560,252,"ограничениям",12,C.muted)+
+    l8_metrics: '<svg viewBox="0 0 820 250">'+DEFS+
+      mcard(20, 20, "Accuracy", "Точность")+
+      mcard(290, 20, "Completeness", "Полнота")+
+      mcard(560, 20, "Consistency", "Согласованность")+
+      mcard(20, 130, "Timeliness", "Актуальность")+
+      mcard(290, 130, "Validity", "Валидность")+
+      mcard(560, 130, "Uniqueness", "Уникальность")+
       '</svg>',
 
     // ---------- Урок 9 ----------
@@ -381,54 +400,23 @@
       '</svg>',
 
     // ---------- Урок 10 ----------
-    l10_case: '<svg viewBox="0 0 820 300">'+DEFS+
-      box(30,50,190,90,'#f1f1f3')+txt(125,80,"«МегаЗвон» сегодня",13,C.red,700)+
-      txt(125,105,"CSV на FTP · ручной Excel",11.5,C.muted)+
-      txt(125,122,"отчёт через 3 дня · ошибки",11.5,C.muted)+
-      box(30,180,190,90,'#f1f1f3')+txt(125,210,"Хочет руководство",13,'#0f8a02',700)+
-      txt(125,235,"отчёты к 9:00 · реальное время",11.5,C.muted)+
-      txt(125,252,"меньше ошибок · автоматизация",11.5,C.muted)+
-      arrow(230,145,290,145)+
-      box(295,70,230,150,C.a,14)+txt(410,105,"ETL-ПАЙПЛАЙН",14.5,'#0d0d0d',800)+
-      txt(410,130,"загрузка · валидация",11.5,'#c9c9cf')+
-      txt(410,147,"трансформация · витрины",11.5,'#c9c9cf')+
-      txt(410,172,"модульность · ×10 нагрузка",11.5,'#c9c9cf')+
-      txt(410,189,"отказоустойчивость · мониторинг",11.5,'#c9c9cf')+
-      arrow(530,145,590,145)+
-      box(595,55,195,80,'#f1f1f3')+txt(692,85,"Отчёты",13,C.ink,800)+
-      txt(692,108,"рук-во · продажи · техотдел",11,C.muted)+
-      box(595,165,195,80,'#f1f1f3')+txt(692,195,"К 9:00 утра",13,'#0f8a02',800)+
-      txt(692,218,"дедлайн отчётности",11,C.muted)+
-      txt(410,288,"1 000 000 абонентов · 99 регионов · 500 000 звонков в день · 5 тарифов",12.5,C.muted)+
-      '</svg>',
-
-    l10_pipeline: '<svg viewBox="0 0 820 340">'+DEFS+
-      box(30,40,130,50,'#f1f1f3')+txt(95,70,"FTP: CSV",12.5,C.ink,700)+
-      arrow(165,65,210,65)+
-      box(215,40,130,50,C.orange)+txt(280,70,"Kafka",13,'#fff',800)+
-      arrow(350,65,395,65)+
-      box(400,40,130,50,C.a)+txt(465,70,"Загрузка",12.5,'#0d0d0d',700)+
-      arrow(535,65,580,65)+
-      box(585,40,130,50,C.blue)+txt(650,70,"Валидация",12.5,'#fff',700)+
-      box(725,45,80,40,C.badSoft)+txt(765,69,"≤ 5% брака",10.5,C.red,700)+
-      arrow(650,95,650,140)+
-      box(585,145,130,50,C.teal)+txt(650,175,"Трансформация",10.5,'#fff',700)+
-      arrow(580,170,535,170)+
-      box(400,145,130,50,C.green)+txt(465,175,"Витрины",12.5,'#0d0d0d',700)+
-      arrow(395,170,350,170)+
-      box(215,145,130,50,C.green)+txt(280,175,"Отчёты",12.5,'#0d0d0d',700)+
-      txt(280,212,"к 9:00 утра",11,'#0f8a02',700)+
-      arrow(280,220,280,255)+
-      box(215,258,280,44,C.a2)+txt(355,285,"Airflow: расписание и алерты",12,'#fff',700)+
-      '<circle cx="120" cy="280" r="24" fill="rgba(255,92,92,.12)"/>'+
-      '<path d="M120 268c-5 0-8 4-8 9v4l-3 4h22l-3-4v-4c0-5-3-9-8-9z" fill="none" stroke="'+C.red+'" stroke-width="2"/>'+
-      '<path d="M116 290c0 2 2 3 4 3s4-1 4-3" fill="none" stroke="'+C.red+'" stroke-width="2"/>'+
-      txt(120,318,"мониторинг",11,C.red,700)+
-      arrow(96,280,210,280,C.red)+
-      txt(640,240,"поступление 6:00 → обработка 7:00 →",11.5,C.muted)+
-      txt(640,257,"отчёты к 9:00 · доступность 99,5%",11.5,C.muted)+
-      txt(410,330,"Пайплайн проекта: FTP → Kafka → загрузка → валидация → трансформация → витрины → отчёты, с мониторингом",12.5,C.muted)+
+    l10_case: '<svg viewBox="0 0 820 260">'+
+      kcard(20, 20, 385, 170, C.red, "Сегодня", [
+        "CSV-файлы на FTP-сервере",
+        "Отчёты вручную в Excel - 2 часа в день",
+        "Отчётность с задержкой в 3 дня",
+        "Частые ошибки ручной обработки"
+      ])+
+      kcard(415, 20, 385, 170, "#0f8a02", "Хочет руководство", [
+        "Ежедневные отчёты к 9:00 утра",
+        "Анализ данных в реальном времени",
+        "Меньше ошибок в отчётности",
+        "Полная автоматизация обработки"
+      ])+
+      box(20, 205, 780, 38, 'rgba(57,255,20,.10)', 10)+
+      txt(410, 229, "1 000 000 абонентов · 99 регионов · 500 000 звонков в день · 5 тарифов", 12.5, C.ink, 700)+
       '</svg>'
+
   };
 
   // ---------- Состояние и хранилище ----------
@@ -460,7 +448,8 @@
       var s = ls(L.num);
       if (s.passed) done++;
       Object.keys(s.answers).forEach(function (qi) {
-        if (s.answers[qi] === L.quiz[qi].correct) correct++;
+        var perm = (s.order && s.order[qi]) || [0, 1, 2];
+        if (s.answers[qi] === perm.indexOf(L.quiz[qi].correct)) correct++;
       });
     });
     return { done: done, lessons: LESSONS.length, correct: correct, totalQ: totalQ };
@@ -581,10 +570,17 @@
     var s = ls(L.num);
     // если все вопросы уже отвечены - показываем финал с текущим результатом
 
+    var prevImgTitle = null;
     var sectionsHtml = L.sections.map(function (sec, si) {
       if (sec.type === "svg") {
         var svg = window.ILLUS[sec.id] || "";
-        return '<div class="illus">'+svg+'<div class="cap">'+sec.cap+'</div></div>';
+        return '<div class="illus">'+svg+(sec.cap ? '<div class="cap">'+sec.cap+'</div>' : '')+'</div>';
+      }
+      if (sec.type === "img") {
+        var showTitle = sec.title && sec.title !== prevImgTitle;
+        prevImgTitle = sec.title || null;
+        return '<div class="illus">'+(showTitle ? '<div class="illus-title">'+sec.title+'</div>' : '')+
+          '<img src="'+sec.src+'" alt="'+sec.title+'" loading="lazy"></div>';
       }
       if (sec.type === "table") {
         var t = '<div class="tbl-wrap"><table class="tbl"><tr>' + sec.headers.map(function(h){return '<th>'+h+'</th>';}).join("") + '</tr>';
@@ -640,6 +636,22 @@
     if (!root) return;
     var s = ls(L.num);
     var quiz = L.quiz;
+    // перемешивание вариантов: сохраняем порядок в состоянии, чтобы ответы оставались верными
+    if (!s.order) {
+      var legacy = Object.keys(s.answers).length > 0;
+      s.order = quiz.map(function () {
+        var p = [0, 1, 2];
+        if (legacy) return p; // старые попытки без перемешивания - оставить как было
+        for (var i = p.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = p[i]; p[i] = p[j]; p[j] = t;
+        }
+        return p;
+      });
+      state.lessons[L.num] = s;
+      save();
+    }
+    function correctPos(qi) { return s.order[qi].indexOf(quiz[qi].correct); }
 
     // финал
     function renderFinal(score, fresh) {
@@ -667,7 +679,7 @@
     // все уже отвечены ранее?
     if (Object.keys(s.answers).length === quiz.length) {
       var sc = 0;
-      quiz.forEach(function (Q, qi) { if (s.answers[qi] === Q.correct) sc++; });
+      quiz.forEach(function (Q, qi) { if (s.answers[qi] === correctPos(qi)) sc++; });
       renderFinal(sc, false);
       return;
     }
@@ -679,7 +691,7 @@
     function renderQuestion() {
       if (qi >= quiz.length) {
         var sc = 0;
-        quiz.forEach(function (Q, i2) { if (s.answers[i2] === Q.correct) sc++; });
+        quiz.forEach(function (Q, i2) { if (s.answers[i2] === correctPos(i2)) sc++; });
         s.best = Math.max(s.best || 0, sc);
         s.passed = sc >= COURSE.passScore;
         state.lessons[L.num] = s; save();
@@ -688,8 +700,10 @@
         return;
       }
       var Q = quiz[qi];
+      var perm = s.order[qi];
+      var correctIdx = perm.indexOf(Q.correct);
       var dots = quiz.map(function (_, d) {
-        var cls = d === qi ? "cur" : (s.answers[d] === undefined ? "" : (s.answers[d] === quiz[d].correct ? "ok" : "bad"));
+        var cls = d === qi ? "cur" : (s.answers[d] === undefined ? "" : (s.answers[d] === correctPos(d) ? "ok" : "bad"));
         return '<span class="dot '+cls+'"></span>';
       }).join("");
       root.innerHTML = '<div class="quiz-card">'+
@@ -708,7 +722,8 @@
       '</div>';
       var ansWrap = document.getElementById("answers");
       var letters = ["А", "Б", "В"];
-      Q.options.forEach(function (opt, oi) {
+      perm.forEach(function (origIdx, oi) {
+        var opt = Q.options[origIdx];
         var b = document.createElement("button");
         b.className = "answer";
         b.innerHTML = '<span class="letter">'+letters[oi]+'</span><span>'+opt+'</span>';
@@ -722,18 +737,18 @@
         var btns = ansWrap.querySelectorAll(".answer");
         btns.forEach(function (b, oi2) {
           b.disabled = true;
-          if (oi2 === Q.correct) b.classList.add("correct");
+          if (oi2 === correctIdx) b.classList.add("correct");
           else if (oi2 === oi) b.classList.add("wrong");
           else b.classList.add("dim");
         });
-        var ok = oi === Q.correct;
+        var ok = oi === correctIdx;
         s.answers[qi] = oi;
         state.lessons[L.num] = s;
         save();
         fb.className = "feedback " + (ok ? "ok" : "bad");
         fb.innerHTML = (ok ? '<b>'+icon("check",15)+' Верно!</b>' : '<b>'+icon("cross",15)+' Не совсем.</b>') + esc(Q.explain);
         nextBtn.disabled = false;
-        document.getElementById("hint").textContent = ok ? "" : "Правильный ответ: " + letters[Q.correct];
+        document.getElementById("hint").textContent = ok ? "" : "Правильный ответ: " + letters[correctIdx];
         // обновить карточку на главной не требуется; nav обновится на save()
       }
       nextBtn.onclick = function () { qi++; renderQuestion(); };

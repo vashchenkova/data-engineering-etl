@@ -18,7 +18,7 @@ window.LESSONS_PART1 = [
         <li>создание <b>агрегированных витрин данных для BI</b> - менеджер видит выручку по годам и месяцам в разрезе категорий, закупщик - поставщиков по товарным позициям;</li>
         <li>создание <b>витрин для ML</b> - прогноз спроса, персонализированные рекомендации и рассылки.</li>
       </ul>` },
-    { type: "svg", id: "l1_etl", cap: "Иллюстрация 1.1. Разрозненные источники → единый ETL-процесс → DWH → витрины для BI и ML" },
+    
     { type: "prose", html: `
       <h2 class="h-sub">Три этапа ETL</h2>
       <p>Концепция ETL - разделить процесс обработки данных на <b>3 отдельных этапа</b>.</p>
@@ -27,7 +27,8 @@ window.LESSONS_PART1 = [
         <li><b>Transform (Трансформация)</b> - очистка (удаление дубликатов, заполнение пропусков, приведение типов), обогащение (вычисляемые поля, геоданные, категории), валидация (проверка на соответствие правилам).</li>
         <li><b>Load (Загрузка)</b> - помещение данных в хранилище. Режимы: полная загрузка, инкрементальная, дельта. Стратегии: Append, Truncate-and-Insert, Merge (Upsert).</li>
       </ul>` },
-    { type: "svg", id: "l1_stages", cap: "Иллюстрация 1.2. Этапы ETL: Extract → Transform → Load" },
+    { type: "img", src: "assets/illustrations/lesson1-slide05.png", title: "Этапы ETL процесса" },
+      { type: "img", src: "assets/illustrations/lesson1-slide09.png", title: "Этапы ELT процесса" },
     { type: "prose", html: `
       <h2 class="h-sub">ETL vs ELT</h2>
       <p>В ELT трансформация выполняется <b>после загрузки</b> - внутри самого хранилища данных, а не на отдельном ETL-сервере.</p>` },
@@ -48,7 +49,8 @@ window.LESSONS_PART1 = [
       ["Сложность", "Относительно проще", "Сложнее (состояния, оконные функции)"],
       ["Толерантность к ошибкам", "Проще перезапустить", "Нужны механизмы восстановления"]
     ] },
-    { type: "svg", id: "l1_batch_stream", cap: "Иллюстрация 1.3. Batching - данные «едут» пачками по расписанию; Streaming - непрерывный поток" },
+    { type: "img", src: "assets/illustrations/lesson1-slide11.png", title: "Архитектурные решения: Batching" },
+      { type: "img", src: "assets/illustrations/lesson1-slide13.png", title: "Архитектурные решения: Streaming" },
     { type: "prose", html: `
       <h2 class="h-sub">Lambda и Kappa архитектуры</h2>
       <p><b>Lambda</b> - совместить пакетную и потоковую обработку. Плюсы: точность пакетного слоя + скорость потокового, отказоустойчивость (историю можно пересчитать). Минусы: два кода для одной логики, задержка обновления пакетного слоя.</p>
@@ -103,7 +105,7 @@ window.LESSONS_PART1 = [
     ] },
     { type: "note", html: "<b>Вывод:</b> Cron подходит для простых независимых задач. Airflow - для сложных зависимых рабочих процессов с требованиями к надёжности." },
     { type: "prose", html: `<h2 class="h-sub">Архитектура Airflow</h2>` },
-    { type: "svg", id: "l2_arch", cap: "Иллюстрация 2.1. Архитектура Airflow: Web Server, Scheduler, Executor, Metadata DB, воркеры" },
+    { type: "img", src: "assets/illustrations/lesson2-slide05.png", title: "Архитектура Airflow" },
     { type: "prose", html: `
       <ul>
         <li><b>Metadata Database (PostgreSQL/MySQL)</b> - «мозг» системы: хранит DAG, их код, статусы задач, соединения, переменные, историю запусков.</li>
@@ -114,7 +116,7 @@ window.LESSONS_PART1 = [
       <h2 class="h-sub">DAG - Directed Acyclic Graph</h2>
       <p>DAG - это <b>программа на Python</b>, описывающая workflow. <b>Directed</b> - у задач есть чёткие направления зависимостей (A → B). <b>Acyclic</b> - нет циклов: невозможно вернуться к предыдущей задаче.</p>
       <p>Ключевые параметры DAG: <code>dag_id</code>, <code>start_date</code>, <code>schedule_interval</code> (@daily, cron-выражение). <b>DAG Run</b> - конкретный экземпляр выполнения DAG на определённую дату.</p>` },
-    { type: "svg", id: "l2_dag", cap: "Иллюстрация 2.2. Пример DAG: extract >> transform >> [load_bi, load_ml]" },
+    { type: "img", src: "assets/illustrations/lesson2-slide09.png", title: "Задачи (Tasks) и их зависимости" },
     { type: "code", lang: "python", code: `from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
@@ -140,7 +142,8 @@ with DAG(
       <h2 class="h-sub">Сенсоры и XCom</h2>
       <p><b>Сенсор</b> - оператор, который <b>ждёт</b> внешнее событие: «спит» и периодически просыпается для проверки условия (poke), блокируя последующие задачи, пока условие не станет True. Примеры: <code>FileSensor</code> (ждёт файл в директории), <code>ExternalTaskSensor</code> (ждёт задачу другого DAG), <code>HttpSensor</code> (ждёт ответ API).</p>
       <p><b>XCom (Cross-Communication)</b> - механизм обмена небольшими данными (ключ-значение) между задачами одного DAG Run - «общая папка» конкретного запуска. Ограничение: не подходит для больших объектов (датафреймы, файлы); подходит для ID, путей, статусов, счётчиков.</p>` },
-    { type: "svg", id: "l2_sensor", cap: "Иллюстрация 2.3. Сенсор ждёт файл, затем передаёт эстафету задачам; XCom - обмен малыми данными между задачами" }
+    { type: "img", src: "assets/illustrations/lesson2-slide13.png", title: "XCom - обмен данными между задачами" },
+      { type: "img", src: "assets/illustrations/lesson2-slide14.png", title: "Airflow UI" }
   ],
   practice: {
     title: "Практика 2: Airflow в Docker",
@@ -195,7 +198,8 @@ with DAG(
         <li>Dataset или Timetable - расписание на основе данных или из файла.</li>
       </ul>
       <div class="note"><div>Для подбора cron-выражений удобно использовать сервис crontab.guru - генератор cron-расписаний.</div></div>` },
-    { type: "table", headers: ["Cron-выражение", "Что означает"], rows: [
+    { type: "img", src: "assets/illustrations/lesson3-slide04.png", title: "schedule_interval" },
+      { type: "table", headers: ["Cron-выражение", "Что означает"], rows: [
       ["0 8 * * *", "Каждый день в 08:00"],
       ["0 5 * * 2,4", "Каждый вторник и четверг в 05:00"],
       ["@daily", "Раз в сутки в 00:00 UTC"],
@@ -217,7 +221,7 @@ with DAG(
         <li><code>none_skipped</code> - ни одна не пропущена;</li>
         <li><code>dummy</code> - запускается всегда.</li>
       </ul>` },
-    { type: "svg", id: "l3_trigger", cap: "Иллюстрация 3.1. Классическая ветка: две параллельные задачи и «клинер» с trigger_rule=all_done - он запустится после обеих" },
+    { type: "img", src: "assets/illustrations/lesson3-slide08.png", title: "TaskGroup" },
     { type: "prose", html: `
       <h2 class="h-sub">Динамическое создание задач</h2>
       <p>Сценарии использования: количество задач заранее не известно; все задачи должны иметь уникальные имена; позволяет упростить и структурировать код.</p>
@@ -277,7 +281,8 @@ with DAG(
         <li><b>Внутренние источники:</b> файловые хранилища (Excel/CSV, логи приложений, Hadoop, S3); системы учёта (ERP 1С, CRM Битрикс24, СЭД, Help Desk); базы данных (OLTP PostgreSQL/MS SQL, колоночные ClickHouse).</li>
         <li><b>Внешние источники:</b> веб-скрапинг (цены конкурентов, отзывы), публичные API (OpenWeatherMap, ЦБ РФ, VK API, Telegram Bot API), данные партнёров (электронный обмен, FTP-серверы, облачные обменники).</li>
       </ul>` },
-    { type: "svg", id: "l4_sources", cap: "Иллюстрация 4.1. Разные типы источников данных и их путь в хранилище" },
+    { type: "img", src: "assets/illustrations/lesson4-slide03.png", title: "Источники данных: внутренние" },
+      { type: "img", src: "assets/illustrations/lesson4-slide04.png", title: "Источники данных: внешние" },
     { type: "table", headers: ["", "Структурированные", "Полуструктурированные", "Неструктурированные"], rows: [
       ["Форматы", "CSV, TSV, SQL-таблицы, Excel", "JSON, XML, YAML, логи", "Текст, изображения, видео, аудио"],
       ["Инструменты", "SQL, Pandas, Excel", "JSON/XML-парсеры, jq, Python", "NLP (spaCy, NLTK), OpenCV, аудио"],
@@ -308,7 +313,7 @@ rows = hook.get_records("SELECT COUNT(*) FROM calls;")</pre></div>
       <p>Позволяет запускать другие DAG'и из текущего DAG - удобно изолировать этапы: например, DAG IN загружает данные из файла в таблицу PostgreSQL, а DAG OUT выгружает из таблицы в файл.</p>
       <h2 class="h-sub">Идемпотентность (воспроизводимость)</h2>
       <p>Если повторно загрузить тот же файл «как есть», данные задублируются. Решение - <b>шаг очистки данных за конкретную дату из имени файла</b> перед вставкой: повторная загрузка не приводит к дублированию, пайплайн можно безопасно перезапускать.</p>` },
-    { type: "svg", id: "l4_idem", cap: "Иллюстрация 4.2. Идемпотентная загрузка: сначала DELETE за дату файла, затем INSERT - перезапуск не создаёт дубликатов" }
+    { type: "img", src: "assets/illustrations/lesson4-slide11.png", title: "TriggerDagRunOperator" },
   ],
   practice: {
     title: "Практика 4: Airflow + PostgreSQL",
