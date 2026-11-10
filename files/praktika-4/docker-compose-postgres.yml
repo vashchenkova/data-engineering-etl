@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: airflow_postgres_example
+    environment:
+      POSTGRES_USER: example_user
+      POSTGRES_PASSWORD: example_pass
+      POSTGRES_DB: example_db
+    ports:
+      - "5532:5432"  # Пробрасываем порт 5432 контейнера на 5532 хоста
+    volumes:
+      - postgres_data_volume:/var/lib/postgresql/data # Для сохранения данных
+
+volumes:
+  postgres_data_volume: # Объявляем именованный том
